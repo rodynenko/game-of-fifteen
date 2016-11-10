@@ -1,0 +1,38 @@
+.puzzle-game{
+	margin: 10px;
+	border: 1px solid #999;
+	padding: 5px;
+}
+.puzzle-description{
+	color: red;
+}
+.puzzle-field{
+	padding: 10px;
+}
+.puzzle-field:after{
+	clear: both;
+	content: "";
+	display: block;
+}
+.puzzle-score-field{
+	color: red;
+}
+.puzzle-restart-button{
+	background-color: green;
+}
+.puzzle-restart-button:hover{
+	background-color: gray;
+}
+.puzzle-field-item{
+	float: left;
+	width: 25%;
+	border: 1px solid #999;
+	box-sizing: border-box;
+	color: #fff;
+	text-align: center;
+	background-color: #333;
+}
+.puzzle-field-empty-item{
+	background-color: #fff;
+	border-color: #fff;
+}
