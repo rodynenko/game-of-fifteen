@@ -26,6 +26,7 @@
 .puzzle-field-item{
 	float: left;
 	width: 25%;
+	cursor: pointer;
 	border: 1px solid #999;
 	box-sizing: border-box;
 	color: #fff;
