@@ -86,9 +86,52 @@ function puzzle15game(option){
 			gameArray.push(puzzleItem);
 		}
 		// set new game
-		self.newGame();
+		newGame();
 
-		// add arrows click Listeners
+		// add mouse click Listener
+
+		field.addEventListener("click", function(e){
+			var ev = e || event,
+					targetElement = ev.target || ev.srcElement;
+
+			if (targetElement.className.indexOf("puzzle-field-item") == -1) return;
+			// if empty puzzle item - exit;
+			if (targetElement.className.indexOf("puzzle-field-empty-item") > -1) return;
+
+			//find direction
+			targetPosInList = [].indexOf.call(field.querySelectorAll(".puzzle-field-item"),targetElement);
+
+			if (targetPosInList > -1){
+				// if puzzle is complete - do nothing
+				if (puzzleIsComplete()) return;
+
+				switch (targetPosInList){
+					case emptyItemPos+1:
+						movePuzzleItems("left");
+						break;
+					case emptyItemPos+n:
+						movePuzzleItems("up");
+						break;
+					case emptyItemPos-1:
+						movePuzzleItems("rigth");
+						break;
+					case emptyItemPos-n:
+						movePuzzleItems("down");
+						break;
+					default:
+						return;
+				}
+
+				if (puzzleIsComplete()) {
+					alert("Congratulations! You have done it!");
+					var restart = comfirm("Play again?");
+					if (restart) this.newGame();
+				}
+			}
+
+		});
+
+		// add arrows click Listener
 		document.body.addEventListener("keyup", function(e){
 			var ev = e || window.event;
 
