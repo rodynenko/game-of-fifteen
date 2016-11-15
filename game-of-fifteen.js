@@ -1,4 +1,4 @@
-function puzzle15game(option){
+function Puzzle15game(option){
 
 	var elem = document.querySelector(option.elem),
 			autoStart = option.autoStart || true,
@@ -9,38 +9,40 @@ function puzzle15game(option){
 	var width = (option.width || 400)+"px";
 
 	var gameArray = [ ],
-			gameArrayLength = n*n, // classical
+			gameArrayLength = n*n, // range of the game, classical = 16 items (include empty)
 			stepCounter = 0,
 			emptyItemPos = n*n-1,
-			directions = {
+			directions = { // if the move possible return position where to move emptyItem, else -1;
 				"up": function(){ return emptyItemPos + n < n*n ? emptyItemPos + n : -1; },
 				"down": function(){ return emptyItemPos - n > -1 ? emptyItemPos - n : -1; },
 				"left": function(){ return (emptyItemPos % n !== 3) ? emptyItemPos + 1 : -1; },
 				"rigth": function(){ return (emptyItemPos % n !== 0) ? emptyItemPos - 1 : -1; }
 			},
-			field;
+			stepField, // DOM Element that display steps count
+			field; // DOM Element of field that contains puzzle items
 
 /**
+* Render new game field
 *
-*
-*@function this.newGame()
+*@function newGame
 */
-	this.newGame = function(){
+	function newGame(){
 		gameArray.sort(function(){ return 0.5 - Math.random(); });
 		stepCounter = 0;
 
+		if (stepField) stepField.innerHTML = "steps: 0";
 		// remove puzzle items if exist
-		field.innerHTML = "";
+		if (field) field.innerHTML = "";
 
-		// add rendom sorted puzzle items to field
+		// add random sorted puzzle items to field
 		for (var i=0; i<gameArrayLength; i++){
 			field.appendChild(gameArray[i]);
 			if (gameArray[i].id == "puzzle-item"+(gameArrayLength-1)) emptyItemPos = i;
 		}
-	};
+	}
 
 	/**
-	*
+	* Initial render
 	*
 	*@function this.render
 	*/
@@ -52,11 +54,11 @@ function puzzle15game(option){
 		// create description text
 		var description = document.createElement("span");
 		description.className = "puzzle-description";
-		if (!option.description) description.innerHTML = "Hi! It's 15 puzzle game. Rules are simple. Use arrows to move blocks";
+		description.innerHTML = !option.description ? "Hi! It's 15 puzzle game. Set blocks from 1 to 15. Use arrows or mouse's clicks to move blocks into empty space" : option.description;
 		elem.appendChild(description);
 
-		// create step field
-		var stepField = document.createElement("div");
+		// create step counter field
+		stepField = document.createElement("div");
 		stepField.className = "puzzle-score-field";
 		stepField.innerHTML = "steps: 0";
 		elem.appendChild(stepField);
@@ -66,7 +68,7 @@ function puzzle15game(option){
 		button.className = "puzzle-restart-button";
 		button.innerHTML = "Restart";
 		button.addEventListener("click", function(){
-			self.newGame();
+			newGame();
 		});
 		elem.appendChild(button);
 
@@ -171,17 +173,20 @@ function puzzle15game(option){
 	function movePuzzleItems(direction){
 		var itemToMove = directions[direction](),
 				allItems = field.querySelectorAll(".puzzle-field-item");
-		if (itemToMove > -1){
+
+		if (itemToMove > -1){ //
 			var emptyNextSibling = direction == "left" ? allItems[emptyItemPos] : allItems[emptyItemPos].nextSibling,
 				item = field.replaceChild(allItems[emptyItemPos], allItems[itemToMove]);
+
 			field.insertBefore(item, emptyNextSibling);
 			emptyItemPos = itemToMove; // change emptyItemPos
 			// increase counter
-			elem.querySelector(".puzzle-score-field").innerHTML = "steps: "+(++stepCounter);
+			stepField.innerHTML = "steps: "+(++stepCounter);
 		}
 	}
 /**
-*
+* Check if puzzle is complete
+*@function puzzleIsComplete
 */
 	function puzzleIsComplete(){
 		for (var i=0; i<field.childNodes.length; i++){
@@ -195,8 +200,8 @@ function puzzle15game(option){
 /**
 *
 *@function addClass
-*@param {Element} el -
-*@param {String} classString -
+*@param {Element} el - DOM Element
+*@param {String} classString - string which will be added to className property of el
 */
 	function addClass(el, classString){
 		if(document.classList){
